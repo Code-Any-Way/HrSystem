@@ -2,8 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    color-scheme: light;
+}
+
+html.dark {
+    color-scheme: dark;
+}
+
 html,
 body,
 #app {
-    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    @apply bg-slate-100 text-slate-900 antialiased;
+}
+
+html.dark body {
+    @apply bg-slate-950 text-slate-100;
+}
+
+* {
+    @apply scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
 }

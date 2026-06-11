@@ -5,6 +5,15 @@ import App from './App.vue'
 import './index.css'
 
 const app = createApp(App)
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
 app.use(router)
+
+import { useAuthStore } from './store'
+const auth = useAuthStore(pinia)
+auth.initialize()
+if (auth.isAuthenticated) {
+  auth.loadProfile().catch(() => auth.logout())
+}
+
 app.mount('#app')
