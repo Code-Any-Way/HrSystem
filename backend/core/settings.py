@@ -2,6 +2,9 @@ import os
 import sys
 from pathlib import Path
 from datetime import timedelta
+from decouple import config
+from django.utils.translation import gettext_lazy as _
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,23 +85,29 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 ASGI_APPLICATION = 'core.asgi.application'
 
-# Database Settings
-DB_NAME = os.environ.get('POSTGRES_DB', 'hrms_db')
-DB_USER = os.environ.get('POSTGRES_USER', 'hrms_user')
-DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'hrms_password')
-DB_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
-DB_PORT = os.environ.get('POSTGRES_PORT', '5432')
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
+# =========================
+# DATABASE
+# =========================
+if LOCAL := config('LOCAL', default=True, cast=bool):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE'),
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT', cast=int),
+        }
+    }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
